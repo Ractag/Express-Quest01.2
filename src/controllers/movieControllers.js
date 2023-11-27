@@ -25,6 +25,24 @@ const movies = [
   },
 ];
 
+const users = [
+  {
+    id: 1,
+    firstName: "Victor",
+    lastName: "Garcia",
+  },
+  {
+    id: 2,
+    firstName: "Dimitri",
+    lastName: "Dieu",
+  },
+  {
+    id: 3,
+    firstName: "Jésus",
+    lastName: "Enfant-de-Dimitri",
+  },
+];
+
 const getMovies = (req, res) => {
   res.json(movies);
 };
@@ -41,7 +59,28 @@ const getMovieById = (req, res) => {
   }
 };
 
+const getUsers = (req, res) => {
+  if (users != null) {
+    res.json(users);
+  } else {
+    res.status(404).send("Not Found");
+  }
+};
+
+const getUserId = (req, res) => {
+  const id = parseInt(req.params.id);
+  const userId = users.find((element) => element.id === id);
+
+  if (userId != null) {
+    res.json(userId);
+  } else {
+    res.status(404).send("Not Found");
+  }
+};
+
 module.exports = {
   getMovies,
   getMovieById,
+  getUsers,
+  getUserId,
 };
