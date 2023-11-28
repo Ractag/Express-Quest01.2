@@ -84,7 +84,7 @@ describe("POST /api/users", () => {
       .post("/api/movies")
       .send(userWithMissingProps);
 
-    expect(response.status).toEqual(500);
+    expect(response.status).toEqual(422);
   });
 });
 
@@ -93,7 +93,7 @@ describe("PUT /api/users/:id", () => {
     const newUser = {
       firstname: "Will",
       lastname: "Iam",
-      email: "WillIam@heehee.prout",
+      email: `${crypto.randomUUID()}@wild.com`,
       city: "Whatever",
       language: "Martian",
     };
@@ -114,7 +114,7 @@ describe("PUT /api/users/:id", () => {
     const updatedUser = {
       firstname: "Will",
       lastname: "Iam",
-      email: "WillIam@heehee.prout",
+      email: `${crypto.randomUUID()}@wild.com`,
       city: "Whatever",
       language: "Martian",
     };
@@ -145,5 +145,17 @@ describe("PUT /api/users/:id", () => {
 
     expect(userInDatabase).toHaveProperty("language");
     expect(userInDatabase.language).toStrictEqual(updatedUser.language);
+  });
+
+  it("should return an error", async () => {
+    const userWithMissingProps = {
+      firstname: "Harry Potter",
+    };
+
+    const response = await request(app)
+      .post("/api/movies")
+      .send(userWithMissingProps);
+
+    expect(response.status).toEqual(422);
   });
 });

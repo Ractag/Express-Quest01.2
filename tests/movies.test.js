@@ -84,7 +84,7 @@ describe("POST /api/movies", () => {
       .post("/api/movies")
       .send(movieWithMissingProps);
 
-    expect(response.status).toEqual(500);
+    expect(response.status).toEqual(422);
   });
 });
 
@@ -148,5 +148,17 @@ describe("PUT /api/movies/:id", () => {
 
     expect(movieInDatabase).toHaveProperty("duration");
     expect(movieInDatabase.duration).toStrictEqual(updatedMovie.duration);
+  });
+
+  it("should return an error", async () => {
+    const movieWithMissingProps = {
+      title: "Harry Potter",
+    };
+
+    const response = await request(app)
+      .post("/api/movies")
+      .send(movieWithMissingProps);
+
+    expect(response.status).toEqual(422);
   });
 });
