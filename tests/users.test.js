@@ -87,3 +87,63 @@ describe("POST /api/users", () => {
     expect(response.status).toEqual(500);
   });
 });
+
+describe("PUT /api/users/:id", () => {
+  it("should edit users", async () => {
+    const newUser = {
+      firstname: "Will",
+      lastname: "Iam",
+      email: "WillIam@heehee.prout",
+      city: "Whatever",
+      language: "Martian",
+    };
+
+    const [putResult] = await database.query(
+      "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
+      [
+        newUser.firstname,
+        newUser.lastname,
+        newUser.email,
+        newUser.city,
+        newUser.language,
+      ]
+    );
+
+    const id = putResult.insertId;
+
+    const updatedUser = {
+      firstname: "Will",
+      lastname: "Iam",
+      email: "WillIam@heehee.prout",
+      city: "Whatever",
+      language: "Martian",
+    };
+
+    const response = await request(app)
+      .put(`/api/users/${id}`)
+      .send(updatedUser);
+
+    expect(response.status).toEqual(200);
+
+    const [result] = await database.query("SELECT * FROM users WHERE id=?", id);
+
+    const [userInDatabase] = result;
+
+    expect(userInDatabase).toHaveProperty("id");
+
+    expect(userInDatabase).toHaveProperty("firstname");
+    expect(userInDatabase.firstname).toStrictEqual(updatedUser.firstname);
+
+    expect(userInDatabase).toHaveProperty("lastname");
+    expect(userInDatabase.lastname).toStrictEqual(updatedUser.lastname);
+
+    expect(userInDatabase).toHaveProperty("email");
+    expect(userInDatabase.email).toStrictEqual(updatedUser.email);
+
+    expect(userInDatabase).toHaveProperty("city");
+    expect(userInDatabase.city).toStrictEqual(updatedUser.city);
+
+    expect(userInDatabase).toHaveProperty("language");
+    expect(userInDatabase.language).toStrictEqual(updatedUser.language);
+  });
+});

@@ -93,18 +93,6 @@ describe("PUT /api/movies/:id", () => {
     const newMovie = {
       title: "Avatar",
       director: "James Cameron",
-      year: "2009",
-      color: "1",
-      duration: 162,
-    };
-  });
-});
-
-describe("PUT /api/movies/:id", () => {
-  it("should edit movie", async () => {
-    const newMovie = {
-      title: "Avatar",
-      director: "James Cameron",
       year: "2010",
       color: "1",
       duration: 162,
