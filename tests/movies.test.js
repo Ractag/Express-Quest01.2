@@ -87,3 +87,78 @@ describe("POST /api/movies", () => {
     expect(response.status).toEqual(500);
   });
 });
+
+describe("PUT /api/movies/:id", () => {
+  it("should edit movie", async () => {
+    const newMovie = {
+      title: "Avatar",
+      director: "James Cameron",
+      year: "2009",
+      color: "1",
+      duration: 162,
+    };
+  });
+});
+
+describe("PUT /api/movies/:id", () => {
+  it("should edit movie", async () => {
+    const newMovie = {
+      title: "Avatar",
+      director: "James Cameron",
+      year: "2010",
+      color: "1",
+      duration: 162,
+    };
+
+    const [putResult] = await database.query(
+      "INSERT INTO movies(title, director, year, color, duration) VALUES (?, ?, ?, ?, ?)",
+      [
+        newMovie.title,
+        newMovie.director,
+        newMovie.year,
+        newMovie.color,
+        newMovie.duration,
+      ]
+    );
+
+    const id = putResult.insertId;
+
+    const updatedMovie = {
+      title: "Wild is life",
+      director: "Alan Smithee",
+      year: "2023",
+      color: "0",
+      duration: 120,
+    };
+
+    const response = await request(app)
+      .put(`/api/movies/${id}`)
+      .send(updatedMovie);
+
+    expect(response.status).toEqual(200);
+
+    const [result] = await database.query(
+      "SELECT * FROM movies WHERE id=?",
+      id
+    );
+
+    const [movieInDatabase] = result;
+
+    expect(movieInDatabase).toHaveProperty("id");
+
+    expect(movieInDatabase).toHaveProperty("title");
+    expect(movieInDatabase.title).toStrictEqual(updatedMovie.title);
+
+    expect(movieInDatabase).toHaveProperty("director");
+    expect(movieInDatabase.director).toStrictEqual(updatedMovie.director);
+
+    expect(movieInDatabase).toHaveProperty("year");
+    expect(movieInDatabase.year).toStrictEqual(updatedMovie.year);
+
+    expect(movieInDatabase).toHaveProperty("color");
+    expect(movieInDatabase.color).toStrictEqual(updatedMovie.color);
+
+    expect(movieInDatabase).toHaveProperty("duration");
+    expect(movieInDatabase.duration).toStrictEqual(updatedMovie.duration);
+  });
+});
