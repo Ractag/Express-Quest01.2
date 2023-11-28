@@ -27,24 +27,6 @@ const movies = [
   },
 ];
 
-const users = [
-  {
-    id: 1,
-    firstName: "Victor",
-    lastName: "Garcia",
-  },
-  {
-    id: 2,
-    firstName: "Dimitri",
-    lastName: "Dieu",
-  },
-  {
-    id: 3,
-    firstName: "Jésus",
-    lastName: "Enfant-de-Dimitri",
-  },
-];
-
 const getMovies = (req, res) => {
   res.json(movies);
 };
@@ -56,25 +38,6 @@ const getMovieById = (req, res) => {
 
   if (movie != null) {
     res.json(movie);
-  } else {
-    res.status(404).send("Not Found");
-  }
-};
-
-const getUsers = (req, res) => {
-  if (users != null) {
-    res.json(users);
-  } else {
-    res.status(404).send("Not Found");
-  }
-};
-
-const getUserId = (req, res) => {
-  const id = parseInt(req.params.id);
-  const userId = users.find((element) => element.id === id);
-
-  if (userId != null) {
-    res.json(userId);
   } else {
     res.status(404).send("Not Found");
   }
@@ -92,24 +55,6 @@ const postMovie = (req, res) => {
       res
         .status(201)
         .send({ id: result.insertId, title, director, year, color, duration });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
-};
-
-const postUser = (req, res) => {
-  const { firstname, lastname, email } = req.body;
-
-  database
-    .query("INSERT INTO users(firstname, lastname, email) VALUES (?, ?, ?)", [
-      firstname,
-      lastname,
-      email,
-    ])
-    .then(([result]) => {
-      res.status(201).send({ id: result.insertId, firstname, lastname, email });
     })
     .catch((err) => {
       console.error(err);
@@ -139,35 +84,9 @@ const updateMovie = (req, res) => {
     });
 };
 
-const updateUser = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { firstname, lastname, email } = req.body;
-
-  database
-    .query(
-      "update users set firstname = ?, lastname = ?, email = ? where id = ?",
-      [firstname, lastname, email, id]
-    )
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        res.sendStatus(404);
-      } else {
-        res.sendStatus(200);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
-};
-
 module.exports = {
   getMovies,
   getMovieById,
-  getUsers,
-  getUserId,
   postMovie,
-  postUser,
   updateMovie,
-  updateUser,
 };
